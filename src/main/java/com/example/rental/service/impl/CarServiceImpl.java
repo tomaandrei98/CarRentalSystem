@@ -7,6 +7,7 @@ import com.example.rental.model.Car;
 import com.example.rental.repository.CarRepository;
 import com.example.rental.service.CarService;
 import com.example.rental.utils.converter.CarConverter;
+import com.example.rental.utils.logger.Log;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class CarServiceImpl implements CarService {
     private final CarConverter carConverter;
 
     @Override
+    @Log
     public List<ResponseCarDto> getAllCars() {
         return carRepository.findAll().stream()
                 .map(carConverter::convertModelToResponseDto)
@@ -31,6 +33,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    @Log
     public ResponseCarDto getCarById(Long carId) {
         Car downloadedCar = carRepository.findById(carId)
                 .orElseThrow(
@@ -41,6 +44,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    @Log
     public ResponseCarDto saveCar(RequestCarDto requestCarDto) {
         Car carToSave = carConverter.convertRequestToModel(requestCarDto);
         Car savedCar = carRepository.save(carToSave);
@@ -48,6 +52,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    @Log
     @Transactional
     public ResponseCarDto updateCar(Long carId, RequestCarDto requestCarDto) {
         Optional<Car> optionalCar = carRepository.findById(carId);
@@ -75,6 +80,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    @Log
     public void deleteCarById(Long carId) {
         Car carToDelete = carRepository.findById(carId)
                 .orElseThrow(

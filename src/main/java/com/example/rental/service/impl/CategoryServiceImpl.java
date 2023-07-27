@@ -7,6 +7,7 @@ import com.example.rental.model.Category;
 import com.example.rental.repository.CategoryRepository;
 import com.example.rental.service.CategoryService;
 import com.example.rental.utils.converter.CategoryConverter;
+import com.example.rental.utils.logger.Log;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryConverter categoryConverter;
 
     @Override
+    @Log
     public List<ResponseCategoryDto> getAllCategories() {
         return categoryRepository.findAll().stream()
                 .map(categoryConverter::convertModelToResponseDto)
@@ -31,6 +33,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Log
     public ResponseCategoryDto getCategoryById(Long categoryId) {
         Category downloadedCategory = categoryRepository.findById(categoryId)
                 .orElseThrow(
@@ -41,6 +44,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Log
     public ResponseCategoryDto saveCategory(RequestCategoryDto requestCategoryDto) {
         Category categoryToSave = categoryConverter.convertRequestToModel(requestCategoryDto);
         Category savedCategory = categoryRepository.save(categoryToSave);
@@ -48,6 +52,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Log
     @Transactional
     public ResponseCategoryDto updateCategory(Long categoryId, RequestCategoryDto requestCategoryDto) {
         Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
@@ -69,6 +74,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Log
     public void deleteCategoryById(Long categoryId) {
         Category categoryToDelete = categoryRepository.findById(categoryId)
                 .orElseThrow(

@@ -7,6 +7,7 @@ import com.example.rental.model.Rental;
 import com.example.rental.repository.RentalRepository;
 import com.example.rental.service.RentalService;
 import com.example.rental.utils.converter.RentalConverter;
+import com.example.rental.utils.logger.Log;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class RentalServiceImpl implements RentalService {
     private final RentalConverter rentalConverter;
 
     @Override
+    @Log
     public List<ResponseRentalDto> getAllRentals() {
         return rentalRepository.findAll().stream()
                 .map(rentalConverter::convertModelToResponseDto)
@@ -30,6 +32,7 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
+    @Log
     public ResponseRentalDto getRentalById(Long rentalId) {
         Rental downloadedRental = rentalRepository.findById(rentalId)
                 .orElseThrow(
@@ -40,6 +43,7 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
+    @Log
     public ResponseRentalDto saveRental(RequestRentalDto requestRentalDto) {
         Rental rentalToSave = rentalConverter.convertRequestToModel(requestRentalDto);
         Rental savedRental = rentalRepository.save(rentalToSave);
@@ -47,6 +51,7 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
+    @Log
     @Transactional
     public ResponseRentalDto updateRental(Long rentalId, RequestRentalDto requestRentalDto) {
         Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
@@ -71,6 +76,7 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
+    @Log
     public void deleteRentalById(Long rentalId) {
         Rental rentalToDelete = rentalRepository.findById(rentalId)
                 .orElseThrow(

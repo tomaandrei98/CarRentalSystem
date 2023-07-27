@@ -7,6 +7,7 @@ import com.example.rental.model.Customer;
 import com.example.rental.repository.CustomerRepository;
 import com.example.rental.service.CustomerService;
 import com.example.rental.utils.converter.CustomerConverter;
+import com.example.rental.utils.logger.Log;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerConverter customerConverter;
 
     @Override
+    @Log
     public List<ResponseCustomerDto> getAllCustomers() {
         return customerRepository.findAll().stream()
                 .map(customerConverter::convertModelToResponseDto)
@@ -30,6 +32,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    @Log
     public ResponseCustomerDto getCustomerById(Long customerId) {
         Customer downloadedCustomer = customerRepository.findById(customerId)
                 .orElseThrow(
@@ -40,6 +43,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    @Log
     public ResponseCustomerDto saveCustomer(RequestCustomerDto requestCustomerDto) {
         Customer customerToSave = customerConverter.convertRequestToModel(requestCustomerDto);
         Customer savedCustomer = customerRepository.save(customerToSave);
@@ -47,6 +51,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    @Log
     @Transactional
     public ResponseCustomerDto updateCustomer(Long customerId, RequestCustomerDto requestCustomerDto) {
         Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
@@ -72,6 +77,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    @Log
     public void deleteCustomerById(Long customerId) {
         Customer customerToDelete = customerRepository.findById(customerId)
                 .orElseThrow(
