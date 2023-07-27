@@ -3,6 +3,7 @@ package com.example.rental.service.impl;
 import com.example.rental.dto.request.RequestCategoryDto;
 import com.example.rental.dto.response.ResponseCategoryDto;
 import com.example.rental.exception.CategoryNotFoundException;
+import com.example.rental.exception.DeleteCategoryNotAccepted;
 import com.example.rental.model.Category;
 import com.example.rental.repository.CategoryRepository;
 import com.example.rental.service.CategoryService;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.rental.utils.MessageGenerator.getCategoryNotFoundMessage;
+import static com.example.rental.utils.MessageGenerator.getDeleteCategoryNotAcceptedMessage;
 
 @Service
 @RequiredArgsConstructor
@@ -80,6 +82,10 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(
                         () -> new CategoryNotFoundException(getCategoryNotFoundMessage(categoryId))
                 );
+
+        if (!categoryToDelete.getCars().isEmpty()) {
+            throw new DeleteCategoryNotAccepted(getDeleteCategoryNotAcceptedMessage(categoryId));
+        }
 
         categoryRepository.delete(categoryToDelete);
     }

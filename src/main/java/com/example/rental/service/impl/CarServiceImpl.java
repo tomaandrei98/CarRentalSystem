@@ -3,8 +3,11 @@ package com.example.rental.service.impl;
 import com.example.rental.dto.request.RequestCarDto;
 import com.example.rental.dto.response.ResponseCarDto;
 import com.example.rental.exception.CarNotFoundException;
+import com.example.rental.exception.CategoryNotFoundException;
 import com.example.rental.model.Car;
+import com.example.rental.model.Category;
 import com.example.rental.repository.CarRepository;
+import com.example.rental.repository.CategoryRepository;
 import com.example.rental.service.CarService;
 import com.example.rental.utils.converter.CarConverter;
 import com.example.rental.utils.logger.Log;
@@ -16,12 +19,14 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.rental.utils.MessageGenerator.getCarNotFoundMessage;
+import static com.example.rental.utils.MessageGenerator.getCategoryNotFoundMessage;
 
 @Service
 @RequiredArgsConstructor
 public class CarServiceImpl implements CarService {
 
     private final CarRepository carRepository;
+    private final CategoryRepository categoryRepository;
     private final CarConverter carConverter;
 
     @Override
@@ -45,8 +50,14 @@ public class CarServiceImpl implements CarService {
 
     @Override
     @Log
-    public ResponseCarDto saveCar(RequestCarDto requestCarDto) {
+    public ResponseCarDto saveCar(Long categoryId, RequestCarDto requestCarDto) {
+        Category savedCategory = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new CategoryNotFoundException(getCategoryNotFoundMessage(categoryId)));
         Car carToSave = carConverter.convertRequestToModel(requestCarDto);
+
+        carToSave.setCategory(savedCategory);
+        savedCategory.addCar(carToSave);
+
         Car savedCar = carRepository.save(carToSave);
         return carConverter.convertModelToResponseDto(savedCar);
     }

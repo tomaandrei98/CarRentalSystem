@@ -39,10 +39,14 @@ public class CarController {
 
     @PostMapping
     @Log
-    public ResponseEntity<ApiResponse<ResponseCarDto>> saveCar(@RequestBody RequestCarDto requestCarDto) {
+    public ResponseEntity<ApiResponse<ResponseCarDto>> saveCar(
+            @RequestParam("categoryId") Long categoryId,
+            @RequestBody RequestCarDto requestCarDto) {
 
         return ResponseEntity.status(CREATED)
-                .body(new ApiResponse<>(carService.saveCar(requestCarDto), "Car created successfully."));
+                .body(new ApiResponse<>(carService.saveCar(categoryId, requestCarDto),
+                        "Car created successfully.")
+                );
     }
 
     @PutMapping("{carId}")

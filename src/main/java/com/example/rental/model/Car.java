@@ -13,6 +13,7 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 @Builder
 public class Car extends BaseEntity<Long> {
+
     @Column
     private String make;
 
@@ -30,4 +31,8 @@ public class Car extends BaseEntity<Long> {
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 }

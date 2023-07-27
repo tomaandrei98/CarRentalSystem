@@ -17,4 +17,8 @@ public class MessageGenerator {
     public static String getRentalNotFoundMessage(Long rentalId) {
         return String.format("rental with is %s not found", rentalId);
     }
+
+    public static String getDeleteCategoryNotAcceptedMessage(Long categoryId) {
+        return String.format("delete category with is %s not accepted. cars are associated with this category", categoryId);
+    }
 }

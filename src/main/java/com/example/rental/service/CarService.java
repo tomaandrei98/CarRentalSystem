@@ -10,7 +10,7 @@ public interface CarService {
 
     ResponseCarDto getCarById(Long carId);
 
-    ResponseCarDto saveCar(RequestCarDto requestCarDto);
+    ResponseCarDto saveCar(Long categoryId, RequestCarDto requestCarDto);
 
     ResponseCarDto updateCar(Long carId, RequestCarDto requestCarDto);
 
