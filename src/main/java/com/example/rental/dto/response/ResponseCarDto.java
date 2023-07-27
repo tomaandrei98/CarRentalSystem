@@ -16,4 +16,5 @@ public class ResponseCarDto extends BaseDto {
     private String imageUrl;
     private Double rentalPricePerDay;
     private Status status;
+    private Long categoryId;
 }

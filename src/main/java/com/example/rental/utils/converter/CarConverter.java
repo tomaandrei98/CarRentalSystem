@@ -15,6 +15,7 @@ public class CarConverter {
                 .imageUrl(car.getImageUrl())
                 .rentalPricePerDay(car.getRentalPricePerDay())
                 .status(car.getStatus())
+                .categoryId(car.getCategory().getId())
                 .build();
         response.setId(car.getId());
         return response;
