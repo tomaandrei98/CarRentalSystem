@@ -22,7 +22,7 @@ public class CategoryController {
 
     @GetMapping
     @Log
-    public ResponseEntity<ApiResponse<List<ResponseCategoryDto>>> getAllCompanies() {
+    public ResponseEntity<ApiResponse<List<ResponseCategoryDto>>> getAllCategories() {
         return ResponseEntity.ok(
                 new ApiResponse<>(categoryService.getAllCategories(), "Categories downloaded successfully.")
         );
