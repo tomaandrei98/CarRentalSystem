@@ -21,4 +21,8 @@ public class MessageGenerator {
     public static String getDeleteCategoryNotAcceptedMessage(Long categoryId) {
         return String.format("delete category with is %s not accepted. cars are associated with this category", categoryId);
     }
+
+    public static String getDeleteCustomerNotAcceptedMessage(Long customerId) {
+        return String.format("delete customer with is %s not accepted. rentals are associated with this category", customerId);
+    }
 }

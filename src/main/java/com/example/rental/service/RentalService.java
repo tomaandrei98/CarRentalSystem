@@ -10,7 +10,7 @@ public interface RentalService {
 
     ResponseRentalDto getRentalById(Long rentalId);
 
-    ResponseRentalDto saveRental(RequestRentalDto requestRentalDto);
+    ResponseRentalDto saveRental(Long customerId, RequestRentalDto requestRentalDto);
 
     ResponseRentalDto updateRental(Long rentalId, RequestRentalDto requestRentalDto);
 

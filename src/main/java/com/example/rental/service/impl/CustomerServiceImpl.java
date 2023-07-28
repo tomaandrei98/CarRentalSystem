@@ -3,6 +3,7 @@ package com.example.rental.service.impl;
 import com.example.rental.dto.request.RequestCustomerDto;
 import com.example.rental.dto.response.ResponseCustomerDto;
 import com.example.rental.exception.CustomerNotFoundException;
+import com.example.rental.exception.DeleteCustomerNotAccepted;
 import com.example.rental.model.Customer;
 import com.example.rental.repository.CustomerRepository;
 import com.example.rental.service.CustomerService;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.rental.utils.MessageGenerator.getCustomerNotFoundMessage;
+import static com.example.rental.utils.MessageGenerator.*;
 
 @Service
 @RequiredArgsConstructor
@@ -83,6 +84,10 @@ public class CustomerServiceImpl implements CustomerService {
                 .orElseThrow(
                         () -> new CustomerNotFoundException(getCustomerNotFoundMessage(customerId))
                 );
+
+        if (!customerToDelete.getRentals().isEmpty()) {
+            throw new DeleteCustomerNotAccepted(getDeleteCustomerNotAcceptedMessage(customerId));
+        }
 
         customerRepository.delete(customerToDelete);
     }

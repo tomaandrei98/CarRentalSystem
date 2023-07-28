@@ -39,10 +39,13 @@ public class RentalController {
 
     @PostMapping
     @Log
-    public ResponseEntity<ApiResponse<ResponseRentalDto>> addRental(@RequestBody RequestRentalDto requestRentalDto) {
+    public ResponseEntity<ApiResponse<ResponseRentalDto>> addRental(
+            @RequestParam("customerId") Long customerId,
+            @RequestBody RequestRentalDto requestRentalDto
+    ) {
 
         return ResponseEntity.status(CREATED)
-                .body(new ApiResponse<>(rentalService.saveRental(requestRentalDto),
+                .body(new ApiResponse<>(rentalService.saveRental(customerId, requestRentalDto),
                         "Rental created successfully."));
     }
 

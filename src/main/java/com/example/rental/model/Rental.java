@@ -1,9 +1,7 @@
 package com.example.rental.model;
 
 import com.example.rental.model.base.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -25,4 +23,8 @@ public class Rental extends BaseEntity<Long> {
 
     @Column
     private boolean returned;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 }
