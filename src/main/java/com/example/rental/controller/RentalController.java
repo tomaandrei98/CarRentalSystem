@@ -1,4 +1,4 @@
-package com.example.rental.controllers;
+package com.example.rental.controller;
 
 import com.example.rental.dto.request.RequestRentalDto;
 import com.example.rental.dto.response.ResponseRentalDto;

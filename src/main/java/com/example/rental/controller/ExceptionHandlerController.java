@@ -1,4 +1,4 @@
-package com.example.rental.controllers;
+package com.example.rental.controller;
 
 import com.example.rental.dto.response.general.ApiResponse;
 import com.example.rental.exception.base.OperationNotAcceptedException;

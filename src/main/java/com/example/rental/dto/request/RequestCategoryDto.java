@@ -1,14 +1,15 @@
 package com.example.rental.dto.request;
 
-import com.example.rental.dto.base.BaseDto;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 @Builder
-public class RequestCategoryDto extends BaseDto {
+public class RequestCategoryDto {
     private String name;
     private String description;
 }
