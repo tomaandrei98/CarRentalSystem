@@ -12,6 +12,7 @@ public class RentalConverter {
                 .startDate(rental.getStartDate())
                 .endDate(rental.getEndDate())
                 .returned(rental.isReturned())
+                .customerId(rental.getCustomer().getId())
                 .build();
         response.setId(rental.getId());
         return response;

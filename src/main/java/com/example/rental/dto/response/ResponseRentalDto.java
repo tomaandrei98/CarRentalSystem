@@ -14,4 +14,5 @@ public class ResponseRentalDto extends BaseDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private boolean returned;
+    private Long customerId;
 }
