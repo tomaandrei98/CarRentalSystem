@@ -23,6 +23,14 @@ public class MessageGenerator {
     }
 
     public static String getDeleteCustomerNotAcceptedMessage(Long customerId) {
-        return String.format("delete customer with is %s not accepted. rentals are associated with this category", customerId);
+        return String.format("delete customer with is %s not accepted. rentals are associated with this customer", customerId);
+    }
+
+    public static String getDeleteCarNotAcceptedMessage(Long carId) {
+        return String.format("delete car with is %s not accepted. rentals are associated with this car", carId);
+    }
+
+    public static String getSaveRentalNotAcceptedMessage() {
+        return "you should choose one or more available cars to rent.";
     }
 }

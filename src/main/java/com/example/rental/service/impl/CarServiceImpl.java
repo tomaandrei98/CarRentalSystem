@@ -4,6 +4,7 @@ import com.example.rental.dto.request.RequestCarDto;
 import com.example.rental.dto.response.ResponseCarDto;
 import com.example.rental.exception.CarNotFoundException;
 import com.example.rental.exception.CategoryNotFoundException;
+import com.example.rental.exception.DeleteCarNotAccepted;
 import com.example.rental.model.Car;
 import com.example.rental.model.Category;
 import com.example.rental.repository.CarRepository;
@@ -18,8 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.rental.utils.MessageGenerator.getCarNotFoundMessage;
-import static com.example.rental.utils.MessageGenerator.getCategoryNotFoundMessage;
+import static com.example.rental.utils.MessageGenerator.*;
 
 @Service
 @RequiredArgsConstructor
@@ -97,6 +97,10 @@ public class CarServiceImpl implements CarService {
                 .orElseThrow(
                         () -> new CarNotFoundException(getCarNotFoundMessage(carId))
                 );
+
+        if (!carToDelete.getRentals().isEmpty()) {
+            throw new DeleteCarNotAccepted(getDeleteCarNotAcceptedMessage(carId));
+        }
 
         carRepository.delete(carToDelete);
     }

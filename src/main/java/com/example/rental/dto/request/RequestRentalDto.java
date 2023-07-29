@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -15,4 +16,5 @@ public class RequestRentalDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private boolean returned;
+    private List<Long> carsId;
 }

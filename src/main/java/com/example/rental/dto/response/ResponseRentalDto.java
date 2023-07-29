@@ -4,6 +4,7 @@ import com.example.rental.dto.base.BaseDto;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -15,4 +16,5 @@ public class ResponseRentalDto extends BaseDto {
     private LocalDate endDate;
     private boolean returned;
     private Long customerId;
+    private List<Long> carsId;
 }

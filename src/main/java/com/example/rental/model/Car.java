@@ -5,6 +5,8 @@ import com.example.rental.model.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "cars")
 @Data
@@ -35,4 +37,15 @@ public class Car extends BaseEntity<Long> {
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
+    @ManyToMany(mappedBy = "cars")
+    private List<Rental> rentals;
+
+    public void addRental(Rental rental) {
+        rentals.add(rental);
+    }
+
+    public void removeRental(Rental rental) {
+        rentals.remove(rental);
+    }
 }

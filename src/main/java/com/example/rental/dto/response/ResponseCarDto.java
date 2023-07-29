@@ -4,6 +4,8 @@ import com.example.rental.dto.base.BaseDto;
 import com.example.rental.enums.Status;
 import lombok.*;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,4 +19,5 @@ public class ResponseCarDto extends BaseDto {
     private Double rentalPricePerDay;
     private Status status;
     private Long categoryId;
+    private List<Long> rentalsId;
 }
