@@ -16,6 +16,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RestController
 @RequestMapping("/api/v1/rentals")
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class RentalController {
 
     private final RentalService rentalService;
