@@ -1,6 +1,8 @@
 package com.example.rental.service.impl;
 
 import com.example.rental.dto.request.RequestCarDto;
+import com.example.rental.dto.request.RequestSaveCarDto;
+import com.example.rental.dto.request.RequestUpdateCarDto;
 import com.example.rental.dto.response.ResponseCarDto;
 import com.example.rental.exception.CarNotFoundException;
 import com.example.rental.exception.CategoryNotFoundException;
@@ -50,10 +52,11 @@ public class CarServiceImpl implements CarService {
 
     @Override
     @Log
-    public ResponseCarDto saveCar(Long categoryId, RequestCarDto requestCarDto) {
+    public ResponseCarDto saveCar(RequestSaveCarDto requestSaveCarDto) {
+        Long categoryId = requestSaveCarDto.getCategoryId();
         Category savedCategory = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException(getCategoryNotFoundMessage(categoryId)));
-        Car carToSave = carConverter.convertRequestToModel(requestCarDto);
+        Car carToSave = carConverter.convertRequestSaveToModel(requestSaveCarDto);
 
         carToSave.setCategory(savedCategory);
         savedCategory.addCar(carToSave);
@@ -65,27 +68,28 @@ public class CarServiceImpl implements CarService {
     @Override
     @Log
     @Transactional
-    public ResponseCarDto updateCar(Long carId, RequestCarDto requestCarDto) {
-        Optional<Car> optionalCar = carRepository.findById(carId);
+    public ResponseCarDto updateCar(RequestUpdateCarDto requestUpdateCarDto) {
+        Long carDtoId = requestUpdateCarDto.getId();
+        Optional<Car> optionalCar = carRepository.findById(carDtoId);
 
         optionalCar
                 .orElseThrow(
-                        () -> new CarNotFoundException(getCarNotFoundMessage(carId))
+                        () -> new CarNotFoundException(getCarNotFoundMessage(carDtoId))
                 );
 
         optionalCar.ifPresent(updateCar -> {
-            updateCar.setMake(requestCarDto.getMake());
-            updateCar.setModel(requestCarDto.getModel());
-            updateCar.setYear(requestCarDto.getYear());
-            updateCar.setImageUrl(requestCarDto.getImageUrl());
-            updateCar.setRentalPricePerDay(requestCarDto.getRentalPricePerDay());
-            updateCar.setStatus(requestCarDto.getStatus());
+            updateCar.setMake(requestUpdateCarDto.getMake());
+            updateCar.setModel(requestUpdateCarDto.getModel());
+            updateCar.setYear(requestUpdateCarDto.getYear());
+            updateCar.setImageUrl(requestUpdateCarDto.getImageUrl());
+            updateCar.setRentalPricePerDay(requestUpdateCarDto.getRentalPricePerDay());
+            updateCar.setStatus(requestUpdateCarDto.getStatus());
         });
 
         return carConverter.convertModelToResponseDto(
-                carRepository.findById(carId)
+                carRepository.findById(carDtoId)
                         .orElseThrow(
-                                () -> new CarNotFoundException(getCarNotFoundMessage(carId))
+                                () -> new CarNotFoundException(getCarNotFoundMessage(carDtoId))
                         )
         );
     }

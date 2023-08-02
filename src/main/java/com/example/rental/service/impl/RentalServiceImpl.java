@@ -2,6 +2,7 @@ package com.example.rental.service.impl;
 
 import com.example.rental.dto.request.RequestRentalDto;
 import com.example.rental.dto.response.ResponseRentalDto;
+import com.example.rental.enums.Status;
 import com.example.rental.exception.CustomerNotFoundException;
 import com.example.rental.exception.RentalNotFoundException;
 import com.example.rental.exception.SaveRentalNotAccepted;
@@ -70,7 +71,10 @@ public class RentalServiceImpl implements RentalService {
             throw new SaveRentalNotAccepted(getSaveRentalNotAcceptedMessage());
         }
 
-        cars.forEach(car -> car.addRental(rentalToSave));
+        cars.forEach(car -> {
+            car.addRental(rentalToSave);
+            car.setStatus(Status.RENTED);
+        });
         rentalToSave.setCars(cars);
     }
 

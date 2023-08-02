@@ -1,6 +1,7 @@
 package com.example.rental.utils.converter;
 
 import com.example.rental.dto.request.RequestCarDto;
+import com.example.rental.dto.request.RequestSaveCarDto;
 import com.example.rental.dto.response.ResponseCarDto;
 import com.example.rental.model.Car;
 import com.example.rental.model.base.BaseEntity;
@@ -33,6 +34,18 @@ public class CarConverter {
                 .imageUrl(requestCarDto.getImageUrl())
                 .rentalPricePerDay(requestCarDto.getRentalPricePerDay())
                 .status(requestCarDto.getStatus())
+                .rentals(new ArrayList<>())
+                .build();
+    }
+
+    public Car convertRequestSaveToModel(RequestSaveCarDto requestSaveCarDto) {
+        return Car.builder()
+                .make(requestSaveCarDto.getMake())
+                .model(requestSaveCarDto.getModel())
+                .year(requestSaveCarDto.getYear())
+                .imageUrl(requestSaveCarDto.getImageUrl())
+                .rentalPricePerDay(requestSaveCarDto.getRentalPricePerDay())
+                .status(requestSaveCarDto.getStatus())
                 .rentals(new ArrayList<>())
                 .build();
     }

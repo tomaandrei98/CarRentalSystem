@@ -1,6 +1,8 @@
 package com.example.rental.controller;
 
 import com.example.rental.dto.request.RequestCarDto;
+import com.example.rental.dto.request.RequestSaveCarDto;
+import com.example.rental.dto.request.RequestUpdateCarDto;
 import com.example.rental.dto.response.ResponseCarDto;
 import com.example.rental.dto.response.general.ApiResponse;
 import com.example.rental.service.CarService;
@@ -41,23 +43,21 @@ public class CarController {
     @PostMapping
     @Log
     public ResponseEntity<ApiResponse<ResponseCarDto>> saveCar(
-            @RequestParam("categoryId") Long categoryId,
-            @RequestBody RequestCarDto requestCarDto) {
+            @RequestBody RequestSaveCarDto requestSaveCarDto) {
 
         return ResponseEntity.status(CREATED)
-                .body(new ApiResponse<>(carService.saveCar(categoryId, requestCarDto),
+                .body(new ApiResponse<>(carService.saveCar(requestSaveCarDto),
                         "Car created successfully.")
                 );
     }
 
-    @PutMapping("{carId}")
+    @PutMapping
     public ResponseEntity<ApiResponse<ResponseCarDto>> updateCar(
-            @PathVariable("carId") Long carId,
-            @RequestBody RequestCarDto requestCarDto
+            @RequestBody RequestUpdateCarDto requestUpdateCarDto
     ) {
 
         return ResponseEntity.ok(
-                new ApiResponse<>(carService.updateCar(carId, requestCarDto), "Car updated successfully.")
+                new ApiResponse<>(carService.updateCar(requestUpdateCarDto), "Car updated successfully.")
         );
     }
 
