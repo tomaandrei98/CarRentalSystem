@@ -1,14 +1,15 @@
 package com.example.rental.service.impl;
 
-import com.example.rental.dto.request.RequestCarDto;
 import com.example.rental.dto.request.RequestSaveCarDto;
 import com.example.rental.dto.request.RequestUpdateCarDto;
 import com.example.rental.dto.response.ResponseCarDto;
+import com.example.rental.enums.Status;
 import com.example.rental.exception.CarNotFoundException;
 import com.example.rental.exception.CategoryNotFoundException;
 import com.example.rental.exception.DeleteCarNotAccepted;
 import com.example.rental.model.Car;
 import com.example.rental.model.Category;
+import com.example.rental.model.Rental;
 import com.example.rental.repository.CarRepository;
 import com.example.rental.repository.CategoryRepository;
 import com.example.rental.service.CarService;
@@ -18,6 +19,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +39,32 @@ public class CarServiceImpl implements CarService {
         return carRepository.findAll().stream()
                 .map(carConverter::convertModelToResponseDto)
                 .toList();
+    }
+
+    @Override
+    public List<ResponseCarDto> getAvailableCars() {
+        return carRepository.findAll().stream()
+                .filter(car -> car.getStatus().equals(Status.AVAILABLE))
+                .map(carConverter::convertModelToResponseDto)
+                .toList();
+    }
+
+
+    @Override
+    public List<ResponseCarDto> getAvailableCars(LocalDate startDate, LocalDate endDate) {
+        return carRepository.findAll().stream()
+                .filter(car -> isCarAvailableInDateRange(car, startDate, endDate))
+                .map(carConverter::convertModelToResponseDto)
+                .toList();
+    }
+
+    private boolean isCarAvailableInDateRange(Car car, LocalDate startDate, LocalDate endDate) {
+        for (Rental rental : car.getRentals()) {
+            if (!rental.isReturned() && !rental.getStartDate().isAfter(endDate) && !rental.getEndDate().isBefore(startDate)) {
+                return false; // Car has an ongoing rental during the specified date range
+            }
+        }
+        return true; // Car is available in the given date range
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.example.rental.controller;
 
-import com.example.rental.dto.request.RequestCarDto;
 import com.example.rental.dto.request.RequestSaveCarDto;
 import com.example.rental.dto.request.RequestUpdateCarDto;
 import com.example.rental.dto.response.ResponseCarDto;
@@ -8,9 +7,11 @@ import com.example.rental.dto.response.general.ApiResponse;
 import com.example.rental.service.CarService;
 import com.example.rental.utils.logger.Log;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -28,6 +29,18 @@ public class CarController {
     public ResponseEntity<ApiResponse<List<ResponseCarDto>>> getAllCars() {
         return ResponseEntity.ok(
                 new ApiResponse<>(carService.getAllCars(), "Cars downloaded successfully.")
+        );
+    }
+
+    @GetMapping("/available")
+    @Log
+    public ResponseEntity<ApiResponse<List<ResponseCarDto>>> getAvailableCars(
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+    ) {
+        return ResponseEntity.ok(
+                new ApiResponse<>(carService.getAvailableCars(startDate, endDate),
+                        "Available cars downloaded successfully.s")
         );
     }
 

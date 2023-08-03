@@ -1,6 +1,7 @@
 package com.example.rental.controller;
 
 import com.example.rental.dto.request.RequestRentalDto;
+import com.example.rental.dto.request.RequestSaveRentalDto;
 import com.example.rental.dto.response.ResponseRentalDto;
 import com.example.rental.dto.response.general.ApiResponse;
 import com.example.rental.service.RentalService;
@@ -38,15 +39,23 @@ public class RentalController {
         );
     }
 
+    @GetMapping("/return/{rentalId}")
+    @Log
+    public ResponseEntity<ApiResponse<ResponseRentalDto>> returnRentalById(@PathVariable("rentalId") Long rentalId) {
+        return ResponseEntity.ok(
+                new ApiResponse<>(rentalService.returnRentalById(rentalId),
+                "Rental returned successfully.")
+        );
+    }
+
     @PostMapping
     @Log
     public ResponseEntity<ApiResponse<ResponseRentalDto>> addRental(
-            @RequestParam("customerId") Long customerId,
-            @RequestBody RequestRentalDto requestRentalDto
+            @RequestBody RequestSaveRentalDto requestSaveRentalDto
     ) {
 
         return ResponseEntity.status(CREATED)
-                .body(new ApiResponse<>(rentalService.saveRental(customerId, requestRentalDto),
+                .body(new ApiResponse<>(rentalService.saveRental(requestSaveRentalDto),
                         "Rental created successfully."));
     }
 

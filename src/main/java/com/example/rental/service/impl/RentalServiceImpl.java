@@ -1,8 +1,8 @@
 package com.example.rental.service.impl;
 
 import com.example.rental.dto.request.RequestRentalDto;
+import com.example.rental.dto.request.RequestSaveRentalDto;
 import com.example.rental.dto.response.ResponseRentalDto;
-import com.example.rental.enums.Status;
 import com.example.rental.exception.CustomerNotFoundException;
 import com.example.rental.exception.RentalNotFoundException;
 import com.example.rental.exception.SaveRentalNotAccepted;
@@ -14,6 +14,7 @@ import com.example.rental.repository.CustomerRepository;
 import com.example.rental.repository.RentalRepository;
 import com.example.rental.service.RentalService;
 import com.example.rental.utils.converter.RentalConverter;
+import com.example.rental.utils.email.EmailSenderService;
 import com.example.rental.utils.logger.Log;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class RentalServiceImpl implements RentalService {
     private final RentalConverter rentalConverter;
     private final CustomerRepository customerRepository;
     private final CarRepository carRepository;
+    private final EmailSenderService emailSenderService;
 
     @Override
     @Log
@@ -53,19 +55,28 @@ public class RentalServiceImpl implements RentalService {
 
     @Override
     @Log
-    public ResponseRentalDto saveRental(Long customerId, RequestRentalDto requestRentalDto) {
-        Rental rentalToSave = rentalConverter.convertRequestToModel(requestRentalDto);
+    public ResponseRentalDto saveRental(RequestSaveRentalDto requestSaveRentalDto) {
+        Rental rentalToSave = rentalConverter.convertRequestSaveToModel(requestSaveRentalDto);
 
-        handleCustomerRelationship(customerId, rentalToSave);
-
-        handleCarsRelationship(requestRentalDto, rentalToSave);
+        handleCustomerRelationship(requestSaveRentalDto.getEmail(), rentalToSave);
+        handleCarsRelationship(requestSaveRentalDto, rentalToSave);
 
         Rental savedRental = rentalRepository.save(rentalToSave);
-        return rentalConverter.convertModelToResponseDto(savedRental);
+        ResponseRentalDto responseRentalDto = rentalConverter.convertModelToResponseDto(savedRental);
+        getEmail(requestSaveRentalDto, responseRentalDto);
+
+        return responseRentalDto;
     }
 
-    private void handleCarsRelationship(RequestRentalDto requestRentalDto, Rental rentalToSave) {
-        List<Car> cars = carRepository.findAllById(requestRentalDto.getCarsId());
+    private void getEmail(RequestSaveRentalDto requestSaveRentalDto, ResponseRentalDto responseRentalDto) {
+        emailSenderService.sendEmail(requestSaveRentalDto.getEmail(),
+                "Rental made successfully.",
+                String.format("Rent details:\n\n - start date: %s,\n - end date: %s,\n - total price: %s",
+                        responseRentalDto.getStartDate(), responseRentalDto.getEndDate(), responseRentalDto.getTotalPrice()));
+    }
+
+    private void handleCarsRelationship(RequestSaveRentalDto requestSaveRentalDto, Rental rentalToSave) {
+        List<Car> cars = carRepository.findAllById(requestSaveRentalDto.getCarsId());
 
         if (cars.isEmpty()) {
             throw new SaveRentalNotAccepted(getSaveRentalNotAcceptedMessage());
@@ -73,14 +84,14 @@ public class RentalServiceImpl implements RentalService {
 
         cars.forEach(car -> {
             car.addRental(rentalToSave);
-            car.setStatus(Status.RENTED);
+//            car.setStatus(Status.RENTED);
         });
         rentalToSave.setCars(cars);
     }
 
-    private void handleCustomerRelationship(Long customerId, Rental rentalToSave) {
-        Customer savedCustomer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new CustomerNotFoundException(getCustomerNotFoundMessage(customerId)));
+    private void handleCustomerRelationship(String customerEmail, Rental rentalToSave) {
+        Customer savedCustomer = customerRepository.findByEmail(customerEmail)
+                .orElseThrow(() -> new CustomerNotFoundException(getCustomerNotFoundMessage(customerEmail)));
         rentalToSave.setCustomer(savedCustomer);
         savedCustomer.addRental(rentalToSave);
     }
@@ -118,9 +129,27 @@ public class RentalServiceImpl implements RentalService {
                         () -> new RentalNotFoundException(getRentalNotFoundMessage(rentalId))
                 );
 
-        rentalToDelete.getCars()
-                .forEach(car -> car.removeRental(rentalToDelete));
+        rentalToDelete.getCars().forEach(car -> {
+            car.removeRental(rentalToDelete);
+//            car.setStatus(Status.AVAILABLE);
+        });
 
         rentalRepository.delete(rentalToDelete);
+    }
+
+    @Override
+    @Log
+    public ResponseRentalDto returnRentalById(Long rentalId) {
+        Rental rentalToReturn = rentalRepository.findById(rentalId)
+                .orElseThrow(
+                        () -> new RentalNotFoundException(getRentalNotFoundMessage(rentalId))
+                );
+
+        rentalToReturn.setReturned(true);
+//        rentalToReturn.getCars().forEach(car -> car.setStatus(Status.AVAILABLE));
+
+        return rentalConverter.convertModelToResponseDto(
+                rentalRepository.save(rentalToReturn)
+        );
     }
 }

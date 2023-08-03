@@ -11,3 +11,14 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: mainprojectboot@gmail.com
+    password: fwtnffqxhpnqdrll
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
