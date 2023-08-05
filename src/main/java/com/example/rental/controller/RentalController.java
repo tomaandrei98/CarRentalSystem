@@ -4,6 +4,8 @@ import com.example.rental.dto.request.RequestRentalDto;
 import com.example.rental.dto.request.RequestSaveRentalDto;
 import com.example.rental.dto.response.ResponseRentalDto;
 import com.example.rental.dto.response.general.ApiResponse;
+import com.example.rental.dto.response.paginated.PaginatedResponseCustomerDto;
+import com.example.rental.dto.response.paginated.PaginatedResponseRentalDto;
 import com.example.rental.service.RentalService;
 import com.example.rental.utils.logger.Log;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +47,21 @@ public class RentalController {
         return ResponseEntity.ok(
                 new ApiResponse<>(rentalService.returnRentalById(rentalId),
                 "Rental returned successfully.")
+        );
+    }
+
+
+    @GetMapping("/paginated")
+    @Log
+    public ResponseEntity<ApiResponse<PaginatedResponseRentalDto>> getRentalsPaginated(
+            @RequestParam(defaultValue = "0") Integer pageNumber,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(defaultValue = "id") String sortBy
+    ) {
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(rentalService.getRentalsPaginated(pageNumber, pageSize, sortBy),
+                        "Rentals downloaded successfully.")
         );
     }
 

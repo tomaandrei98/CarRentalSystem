@@ -3,6 +3,8 @@ package com.example.rental.service.impl;
 import com.example.rental.dto.request.RequestRentalDto;
 import com.example.rental.dto.request.RequestSaveRentalDto;
 import com.example.rental.dto.response.ResponseRentalDto;
+import com.example.rental.dto.response.paginated.PaginatedResponseCustomerDto;
+import com.example.rental.dto.response.paginated.PaginatedResponseRentalDto;
 import com.example.rental.exception.CustomerNotFoundException;
 import com.example.rental.exception.RentalNotFoundException;
 import com.example.rental.exception.SaveRentalNotAccepted;
@@ -18,6 +20,9 @@ import com.example.rental.utils.email.EmailSenderService;
 import com.example.rental.utils.logger.Log;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -151,5 +156,19 @@ public class RentalServiceImpl implements RentalService {
         return rentalConverter.convertModelToResponseDto(
                 rentalRepository.save(rentalToReturn)
         );
+    }
+
+    @Override
+    public PaginatedResponseRentalDto getRentalsPaginated(Integer pageNumber, Integer pageSize, String sortBy) {
+        Page<Rental> rentalPage = rentalRepository
+                .findAll(PageRequest.of(pageNumber, pageSize, Sort.by(sortBy)));
+
+        return PaginatedResponseRentalDto.builder()
+                .rentals(rentalPage.getContent().stream()
+                        .map(rentalConverter::convertModelToResponseDto)
+                        .toList())
+                .numberOfItems(rentalPage.getTotalElements())
+                .numberOfPages(rentalPage.getTotalPages())
+                .build();
     }
 }

@@ -2,8 +2,11 @@ package com.example.rental.service.impl;
 
 import com.example.rental.dto.request.RequestCustomerDto;
 import com.example.rental.dto.response.ResponseCustomerDto;
+import com.example.rental.dto.response.paginated.PaginatedResponseCategoryDto;
+import com.example.rental.dto.response.paginated.PaginatedResponseCustomerDto;
 import com.example.rental.exception.CustomerNotFoundException;
 import com.example.rental.exception.DeleteCustomerNotAccepted;
+import com.example.rental.model.Category;
 import com.example.rental.model.Customer;
 import com.example.rental.repository.CustomerRepository;
 import com.example.rental.service.CustomerService;
@@ -11,6 +14,9 @@ import com.example.rental.utils.converter.CustomerConverter;
 import com.example.rental.utils.logger.Log;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -90,5 +96,19 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         customerRepository.delete(customerToDelete);
+    }
+
+    @Override
+    public PaginatedResponseCustomerDto getCustomersPaginated(Integer pageNumber, Integer pageSize, String sortBy) {
+        Page<Customer> customerPage = customerRepository
+                .findAll(PageRequest.of(pageNumber, pageSize, Sort.by(sortBy)));
+
+        return PaginatedResponseCustomerDto.builder()
+                .customers(customerPage.getContent().stream()
+                        .map(customerConverter::convertModelToResponseDto)
+                        .toList())
+                .numberOfItems(customerPage.getTotalElements())
+                .numberOfPages(customerPage.getTotalPages())
+                .build();
     }
 }

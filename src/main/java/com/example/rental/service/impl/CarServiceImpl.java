@@ -3,6 +3,7 @@ package com.example.rental.service.impl;
 import com.example.rental.dto.request.RequestSaveCarDto;
 import com.example.rental.dto.request.RequestUpdateCarDto;
 import com.example.rental.dto.response.ResponseCarDto;
+import com.example.rental.dto.response.paginated.PaginatedResponseCarDto;
 import com.example.rental.enums.Status;
 import com.example.rental.exception.CarNotFoundException;
 import com.example.rental.exception.CategoryNotFoundException;
@@ -17,6 +18,9 @@ import com.example.rental.utils.converter.CarConverter;
 import com.example.rental.utils.logger.Log;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.rental.utils.MessageGenerator.*;
+import static org.springframework.data.domain.PageRequest.of;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +47,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    @Log
     public List<ResponseCarDto> getAvailableCars() {
         return carRepository.findAll().stream()
                 .filter(car -> car.getStatus().equals(Status.AVAILABLE))
@@ -49,8 +55,41 @@ public class CarServiceImpl implements CarService {
                 .toList();
     }
 
+    @Override
+    @Log
+    public List<ResponseCarDto> getCarByCategoryId(Long categoryId) {
+        return carRepository.findAll().stream()
+                .filter(car -> car.getCategory().getId().equals(categoryId))
+                .map(carConverter::convertModelToResponseDto)
+                .toList();
+    }
 
     @Override
+    @Log
+    public List<ResponseCarDto> getCarsByMatchingName(String matchingName) {
+        return carRepository.findAll().stream()
+                .filter(car -> car.getMake().toLowerCase().contains(matchingName.toLowerCase()) ||
+                        car.getModel().toLowerCase().contains(matchingName.toLowerCase()))
+                .map(carConverter::convertModelToResponseDto)
+                .toList();
+    }
+
+    @Override
+    @Log
+    public PaginatedResponseCarDto getCarsPaginated(Integer pageNumber, Integer pageSize, String sortBy) {
+        Page<Car> carPage = carRepository.findAll(of(pageNumber, pageSize, Sort.by(sortBy)));
+
+        return PaginatedResponseCarDto.builder()
+                .cars(carPage.getContent().stream()
+                        .map(carConverter::convertModelToResponseDto)
+                        .toList())
+                .numberOfItems(carPage.getTotalElements())
+                .numberOfPages(carPage.getTotalPages())
+                .build();
+    }
+
+    @Override
+    @Log
     public List<ResponseCarDto> getAvailableCars(LocalDate startDate, LocalDate endDate) {
         return carRepository.findAll().stream()
                 .filter(car -> isCarAvailableInDateRange(car, startDate, endDate))

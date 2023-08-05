@@ -3,6 +3,8 @@ package com.example.rental.controller;
 import com.example.rental.dto.request.RequestCustomerDto;
 import com.example.rental.dto.response.ResponseCustomerDto;
 import com.example.rental.dto.response.general.ApiResponse;
+import com.example.rental.dto.response.paginated.PaginatedResponseCategoryDto;
+import com.example.rental.dto.response.paginated.PaginatedResponseCustomerDto;
 import com.example.rental.service.CustomerService;
 import com.example.rental.utils.logger.Log;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +40,20 @@ public class CustomerController {
         return ResponseEntity.ok(
                 new ApiResponse<>(customerService.getCustomerById(customerId),
                         "Customer downloaded successfully.")
+        );
+    }
+
+    @GetMapping("/paginated")
+    @Log
+    public ResponseEntity<ApiResponse<PaginatedResponseCustomerDto>> getCustomersPaginated(
+            @RequestParam(defaultValue = "0") Integer pageNumber,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(defaultValue = "firstName") String sortBy
+    ) {
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(customerService.getCustomersPaginated(pageNumber, pageSize, sortBy),
+                        "Customers downloaded successfully.")
         );
     }
 

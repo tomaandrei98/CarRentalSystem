@@ -2,6 +2,7 @@ package com.example.rental.service.impl;
 
 import com.example.rental.dto.request.RequestCategoryDto;
 import com.example.rental.dto.response.ResponseCategoryDto;
+import com.example.rental.dto.response.paginated.PaginatedResponseCategoryDto;
 import com.example.rental.exception.CategoryNotFoundException;
 import com.example.rental.exception.DeleteCategoryNotAccepted;
 import com.example.rental.model.Category;
@@ -11,6 +12,10 @@ import com.example.rental.utils.converter.CategoryConverter;
 import com.example.rental.utils.logger.Log;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -88,5 +93,20 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         categoryRepository.delete(categoryToDelete);
+    }
+
+    @Override
+    @Log
+    public PaginatedResponseCategoryDto getCategoriesPaginated(Integer pageNumber, Integer pageSize, String sortBy) {
+        Page<Category> categoryPage = categoryRepository
+                .findAll(PageRequest.of(pageNumber, pageSize, Sort.by(sortBy)));
+
+        return PaginatedResponseCategoryDto.builder()
+                .categories(categoryPage.getContent().stream()
+                        .map(categoryConverter::convertModelToResponseDto)
+                        .toList())
+                .numberOfItems(categoryPage.getTotalElements())
+                .numberOfPages(categoryPage.getTotalPages())
+                .build();
     }
 }
