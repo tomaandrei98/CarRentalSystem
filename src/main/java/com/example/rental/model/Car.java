@@ -1,6 +1,7 @@
 package com.example.rental.model;
 
 import com.example.rental.enums.Status;
+import com.example.rental.enums.Transmission;
 import com.example.rental.model.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -33,6 +34,18 @@ public class Car extends BaseEntity<Long> {
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    @Column
+    private Integer seats;
+
+    @Column
+    private Transmission transmission;
+
+    @Column(name = "large_bag")
+    private Integer largeBag;
+
+    @Column(name = "small_bag")
+    private Integer smallBag;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)

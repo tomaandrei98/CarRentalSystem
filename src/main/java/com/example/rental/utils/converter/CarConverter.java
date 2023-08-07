@@ -19,7 +19,12 @@ public class CarConverter {
                 .imageUrl(car.getImageUrl())
                 .rentalPricePerDay(car.getRentalPricePerDay())
                 .status(car.getStatus())
+                .seats(car.getSeats())
+                .transmission(car.getTransmission())
+                .smallBag(car.getSmallBag())
+                .largeBag(car.getLargeBag())
                 .categoryId(car.getCategory().getId())
+                .categoryName(car.getCategory().getName())
                 .rentalsId(car.getRentals().stream().map(BaseEntity::getId).toList())
                 .build();
         response.setId(car.getId());
@@ -46,6 +51,10 @@ public class CarConverter {
                 .imageUrl(requestSaveCarDto.getImageUrl())
                 .rentalPricePerDay(requestSaveCarDto.getRentalPricePerDay())
                 .status(requestSaveCarDto.getStatus())
+                .seats(requestSaveCarDto.getSeats())
+                .transmission(requestSaveCarDto.getTransmission())
+                .smallBag(requestSaveCarDto.getSmallBag())
+                .largeBag(requestSaveCarDto.getLargeBag())
                 .rentals(new ArrayList<>())
                 .build();
     }

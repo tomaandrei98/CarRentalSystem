@@ -37,4 +37,10 @@ public class MessageGenerator {
     public static String getSaveRentalNotAcceptedMessage() {
         return "you should choose one or more available cars to rent.";
     }
+
+    public static String getEmailAlreadyTakenMessage(String email) {
+        return String.format("email %s already taken.", email);
+    }
+
+
 }

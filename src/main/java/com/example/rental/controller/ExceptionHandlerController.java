@@ -1,6 +1,7 @@
 package com.example.rental.controller;
 
 import com.example.rental.dto.response.general.ApiResponse;
+import com.example.rental.exception.EmailAlreadyTakenException;
 import com.example.rental.exception.base.OperationNotAcceptedException;
 import com.example.rental.exception.base.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -12,8 +13,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @ControllerAdvice
 public class ExceptionHandlerController {
@@ -34,5 +34,14 @@ public class ExceptionHandlerController {
         responseBody.put("error message", exception.getLocalizedMessage());
 
         return new ResponseEntity<>(new ApiResponse<>(responseBody, exception.getLocalizedMessage()), BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EmailAlreadyTakenException.class)
+    public ResponseEntity<ApiResponse<Object>> handlerEmailAlreadyTakenException(EmailAlreadyTakenException exception) {
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("timestamp", LocalDateTime.now());
+        responseBody.put("error message", exception.getLocalizedMessage());
+
+        return new ResponseEntity<>(new ApiResponse<>(responseBody, exception.getLocalizedMessage()), CONFLICT);
     }
 }

@@ -57,6 +57,12 @@ public class CustomerController {
         );
     }
 
+    @GetMapping("/check-email")
+    @Log
+    public ResponseEntity<Boolean> checkEmailExists(@RequestParam("email") String email) {
+        return ResponseEntity.ok(customerService.checkEmailExists(email));
+    }
+
     @PostMapping
     @Log
     public ResponseEntity<ApiResponse<ResponseCustomerDto>> addCustomer(

@@ -18,4 +18,6 @@ public interface CustomerService {
     void deleteCustomerById(Long customerId);
 
     PaginatedResponseCustomerDto getCustomersPaginated(Integer pageNumber, Integer pageSize, String sortBy);
+
+    Boolean checkEmailExists(String email);
 }
