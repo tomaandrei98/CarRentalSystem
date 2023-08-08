@@ -96,4 +96,14 @@ public class CustomerController {
                 new ApiResponse<>("Customer deleted successfully.")
         );
     }
+
+    @GetMapping("/populate")
+    @Log
+    public ResponseEntity<ApiResponse<Void>> populateWithCustomer() {
+        customerService.populateWithCustomers();
+
+        return ResponseEntity.ok(
+                new ApiResponse<>("Customers added successfully")
+        );
+    }
 }

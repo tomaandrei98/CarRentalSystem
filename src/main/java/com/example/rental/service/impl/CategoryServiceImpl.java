@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -108,5 +109,16 @@ public class CategoryServiceImpl implements CategoryService {
                 .numberOfItems(categoryPage.getTotalElements())
                 .numberOfPages(categoryPage.getTotalPages())
                 .build();
+    }
+
+    @Override
+    public void populateWithCategories() {
+        categoryRepository.save(Category.builder().name("Small").description("small").cars(new ArrayList<>()).build());
+        categoryRepository.save(Category.builder().name("Medium").description("medium").cars(new ArrayList<>()).build());
+        categoryRepository.save(Category.builder().name("Large").description("large").cars(new ArrayList<>()).build());
+        categoryRepository.save(Category.builder().name("Estate").description("estate").cars(new ArrayList<>()).build());
+        categoryRepository.save(Category.builder().name("Premium").description("premium").cars(new ArrayList<>()).build());
+        categoryRepository.save(Category.builder().name("People carriers").description("people carriers").cars(new ArrayList<>()).build());
+        categoryRepository.save(Category.builder().name("SUVs").description("SUVs").cars(new ArrayList<>()).build());
     }
 }

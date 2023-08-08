@@ -18,4 +18,6 @@ public interface CategoryService {
     void deleteCategoryById(Long categoryId);
 
     PaginatedResponseCategoryDto getCategoriesPaginated(Integer pageNumber, Integer pageSize, String sortBy);
+
+    void populateWithCategories();
 }

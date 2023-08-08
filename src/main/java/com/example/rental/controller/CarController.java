@@ -57,8 +57,7 @@ public class CarController {
     @GetMapping("/filter")
     @Log
     public ResponseEntity<ApiResponse<List<ResponseCarDto>>> getCarsByMatchingName(
-            @RequestParam("matchingName") String matchingName
-    ) {
+            @RequestParam("matchingName") String matchingName) {
 
         return ResponseEntity.ok(
             new ApiResponse<>(carService.getCarsByMatchingName(matchingName),
@@ -119,6 +118,16 @@ public class CarController {
 
         return ResponseEntity.ok(
                 new ApiResponse<>("Car deleted successfully.")
+        );
+    }
+
+    @GetMapping("/populate")
+    @Log
+    public ResponseEntity<ApiResponse<Void>> populateWithCars() {
+        carService.populateWithCars();
+
+        return ResponseEntity.ok(
+                new ApiResponse<>("Cars added successfully")
         );
     }
 }

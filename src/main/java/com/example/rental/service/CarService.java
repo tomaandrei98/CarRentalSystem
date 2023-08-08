@@ -29,4 +29,6 @@ public interface CarService {
     List<ResponseCarDto> getCarsByMatchingName(String matchingName);
 
     PaginatedResponseCarDto getCarsPaginated(Integer pageNumber, Integer pageSize, String sortBy);
+
+    void populateWithCars();
 }

@@ -5,6 +5,7 @@ import com.example.rental.dto.request.RequestSaveRentalDto;
 import com.example.rental.dto.response.ResponseRentalDto;
 import com.example.rental.model.Rental;
 import com.example.rental.model.base.BaseEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -12,7 +13,11 @@ import java.util.ArrayList;
 import static com.example.rental.utils.RentalPriceCalculator.calculatePriceForRental;
 
 @Component
+@RequiredArgsConstructor
 public class RentalConverter {
+
+    private final CarConverter carConverter;
+
     public ResponseRentalDto convertModelToResponseDto(Rental rental) {
         ResponseRentalDto response = ResponseRentalDto.builder()
                 .startDate(rental.getStartDate())
@@ -20,8 +25,11 @@ public class RentalConverter {
                 .returned(rental.isReturned())
                 .totalPrice(calculatePriceForRental(rental))
                 .customerId(rental.getCustomer().getId())
+                .customerEmail(rental.getCustomer().getEmail())
                 .carsId(rental.getCars().stream().map(BaseEntity::getId).toList())
+                .carsDto(rental.getCars().stream().map(carConverter::convertModelToResponseDto).toList())
                 .build();
+
         response.setId(rental.getId());
         return response;
     }

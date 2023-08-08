@@ -88,4 +88,14 @@ public class CategoryController {
                 new ApiResponse<>("Category deleted successfully.")
         );
     }
+
+    @GetMapping("/populate")
+    @Log
+    public ResponseEntity<ApiResponse<Void>> populateWithCategories() {
+        categoryService.populateWithCategories();
+
+        return ResponseEntity.ok(
+                new ApiResponse<>("Category added successfully")
+        );
+    }
 }

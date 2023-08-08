@@ -20,4 +20,6 @@ public interface CustomerService {
     PaginatedResponseCustomerDto getCustomersPaginated(Integer pageNumber, Integer pageSize, String sortBy);
 
     Boolean checkEmailExists(String email);
+
+    void populateWithCustomers();
 }

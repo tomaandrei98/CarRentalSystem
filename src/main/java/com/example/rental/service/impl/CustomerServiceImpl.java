@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -118,5 +119,40 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Boolean checkEmailExists(String email) {
         return customerRepository.findByEmail(email).isPresent();
+    }
+
+    @Override
+    public void populateWithCustomers() {
+        customerRepository.save(
+                Customer.builder()
+                        .firstName("First Name 1")
+                        .lastName("Last Name 1")
+                        .email("first@gmail.com")
+                        .phone("0711111111")
+                        .rentals(new ArrayList<>())
+                        .build()
+        );
+
+        customerRepository.save(
+                Customer.builder()
+                        .firstName("First Name 2")
+                        .lastName("Last Name 2")
+                        .email("second@gmail.com")
+                        .phone("0722222222")
+                        .rentals(new ArrayList<>())
+                        .build()
+        );
+
+        customerRepository.save(
+                Customer.builder()
+                        .firstName("First Name 3")
+                        .lastName("Last Name 3")
+                        .email("third@gmail.com")
+                        .phone("0733333333")
+                        .rentals(new ArrayList<>())
+                        .build()
+        );
+
+
     }
 }
