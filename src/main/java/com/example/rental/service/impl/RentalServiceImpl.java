@@ -3,7 +3,6 @@ package com.example.rental.service.impl;
 import com.example.rental.dto.request.RequestRentalDto;
 import com.example.rental.dto.request.RequestSaveRentalDto;
 import com.example.rental.dto.response.ResponseRentalDto;
-import com.example.rental.dto.response.paginated.PaginatedResponseCustomerDto;
 import com.example.rental.dto.response.paginated.PaginatedResponseRentalDto;
 import com.example.rental.exception.CustomerNotFoundException;
 import com.example.rental.exception.RentalNotFoundException;
@@ -14,6 +13,8 @@ import com.example.rental.model.Rental;
 import com.example.rental.repository.CarRepository;
 import com.example.rental.repository.CustomerRepository;
 import com.example.rental.repository.RentalRepository;
+import com.example.rental.security.model.AppUser;
+import com.example.rental.security.repository.AppUserRepository;
 import com.example.rental.service.RentalService;
 import com.example.rental.utils.converter.RentalConverter;
 import com.example.rental.utils.email.EmailSenderService;
@@ -23,6 +24,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,7 +38,7 @@ import static com.example.rental.utils.MessageGenerator.*;
 public class RentalServiceImpl implements RentalService {
     private final RentalRepository rentalRepository;
     private final RentalConverter rentalConverter;
-    private final CustomerRepository customerRepository;
+    private final AppUserRepository appUserRepository;
     private final CarRepository carRepository;
     private final EmailSenderService emailSenderService;
 
@@ -63,18 +66,18 @@ public class RentalServiceImpl implements RentalService {
     public ResponseRentalDto saveRental(RequestSaveRentalDto requestSaveRentalDto) {
         Rental rentalToSave = rentalConverter.convertRequestSaveToModel(requestSaveRentalDto);
 
-        handleCustomerRelationship(requestSaveRentalDto.getEmail(), rentalToSave);
+        String appUserEmail = handleAppUserRelationship(rentalToSave);
         handleCarsRelationship(requestSaveRentalDto, rentalToSave);
 
         Rental savedRental = rentalRepository.save(rentalToSave);
         ResponseRentalDto responseRentalDto = rentalConverter.convertModelToResponseDto(savedRental);
-        getEmail(requestSaveRentalDto, responseRentalDto);
+        getEmail(appUserEmail, responseRentalDto);
 
         return responseRentalDto;
     }
 
-    private void getEmail(RequestSaveRentalDto requestSaveRentalDto, ResponseRentalDto responseRentalDto) {
-        emailSenderService.sendEmail(requestSaveRentalDto.getEmail(),
+    private void getEmail(String email, ResponseRentalDto responseRentalDto) {
+        emailSenderService.sendEmail(email,
                 "Rental made successfully.",
                 String.format("Rent details:\n\n - start date: %s,\n - end date: %s,\n - total price: %s",
                         responseRentalDto.getStartDate(), responseRentalDto.getEndDate(), responseRentalDto.getTotalPrice()));
@@ -94,11 +97,15 @@ public class RentalServiceImpl implements RentalService {
         rentalToSave.setCars(cars);
     }
 
-    private void handleCustomerRelationship(String customerEmail, Rental rentalToSave) {
-        Customer savedCustomer = customerRepository.findByEmail(customerEmail)
-                .orElseThrow(() -> new CustomerNotFoundException(getCustomerNotFoundMessage(customerEmail)));
-        rentalToSave.setCustomer(savedCustomer);
-        savedCustomer.addRental(rentalToSave);
+    private String handleAppUserRelationship(Rental rentalToSave) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        AppUser appUser = appUserRepository.findUserByUsername(currentUsername);
+
+        rentalToSave.setAppUser(appUser);
+        appUser.addRental(rentalToSave);
+
+        return appUser.getEmail();
     }
 
     @Override

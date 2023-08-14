@@ -16,7 +16,7 @@ public class CustomerConverter {
                 .lastName(customer.getLastName())
                 .email(customer.getEmail())
                 .phone(customer.getPhone())
-                .rentalsId(customer.getRentals().stream().map(BaseEntity::getId).toList())
+//                .rentalsId(customer.getRentals().stream().map(BaseEntity::getId).toList())
                 .build();
         response.setId(customer.getId());
         return response;
@@ -28,7 +28,7 @@ public class CustomerConverter {
                 .lastName(requestCustomerDto.getLastName())
                 .email(requestCustomerDto.getEmail())
                 .phone(requestCustomerDto.getPhone())
-                .rentals(new ArrayList<>())
+//                .rentals(new ArrayList<>())
                 .build();
     }
 }

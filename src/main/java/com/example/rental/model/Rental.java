@@ -1,6 +1,7 @@
 package com.example.rental.model;
 
 import com.example.rental.model.base.BaseEntity;
+import com.example.rental.security.model.AppUser;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,8 +27,8 @@ public class Rental extends BaseEntity<Long> {
     private boolean returned;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
+    @JoinColumn(name = "user_id", nullable = false)
+    private AppUser appUser;
 
     @ManyToMany
     @JoinTable(

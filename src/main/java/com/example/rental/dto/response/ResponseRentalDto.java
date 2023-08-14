@@ -16,8 +16,8 @@ public class ResponseRentalDto extends BaseDto {
     private LocalDate endDate;
     private boolean returned;
     private Double totalPrice;
-    private Long customerId;
-    private String customerEmail;
+    private Long appUserId;
+    private String appUserEmail;
     private List<Long> carsId;
     private List<ResponseCarDto> carsDto;
 }

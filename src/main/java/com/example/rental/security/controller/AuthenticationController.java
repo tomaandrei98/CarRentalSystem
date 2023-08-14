@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,15 +75,20 @@ public class AuthenticationController {
                                       @RequestParam("username") String userName,
                                       @RequestParam("email") String email,
                                       @RequestParam("password") String password,
-                                      @RequestParam("role") String role) {
+                                      @RequestParam("phone") String phone,
+                                      @RequestParam(value = "role", defaultValue = "USER") String role) {
         Map<String, Object> responseMap = new HashMap<>();
+
         AppUser user = new AppUser();
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setEmail(email);
         user.setPassword(new BCryptPasswordEncoder().encode(password));
+        user.setPhone(phone);
         user.setRole(getRoleFromInputString(role));
         user.setUsername(userName);
+        user.setRentals(new ArrayList<>());
+
         UserDetails userDetails = userDetailsService.createUserDetails(
                 userName,
                 user.getPassword(),

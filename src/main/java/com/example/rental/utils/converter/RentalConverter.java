@@ -24,8 +24,8 @@ public class RentalConverter {
                 .endDate(rental.getEndDate())
                 .returned(rental.isReturned())
                 .totalPrice(calculatePriceForRental(rental))
-                .customerId(rental.getCustomer().getId())
-                .customerEmail(rental.getCustomer().getEmail())
+                .appUserId(rental.getAppUser().getId())
+                .appUserEmail(rental.getAppUser().getEmail())
                 .carsId(rental.getCars().stream().map(BaseEntity::getId).toList())
                 .carsDto(rental.getCars().stream().map(carConverter::convertModelToResponseDto).toList())
                 .build();

@@ -1,5 +1,6 @@
 package com.example.rental.security.config;
 
+import com.example.rental.security.model.RoleName;
 import com.example.rental.security.util.JwtRequestFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @EnableWebSecurity
@@ -68,6 +71,40 @@ public class WebSecurityConfig {
                             "/webjars/**",
                             "/swagger-ui.html"
                     ).permitAll();
+
+                    // categories
+                    auth.requestMatchers(GET, "/api/v1/categories").permitAll();
+                    auth.requestMatchers(GET, "/api/v1/categories/populate").hasAuthority(RoleName.ADMIN.name());
+                    auth.requestMatchers(GET, "/api/v1/categories/*").permitAll();
+                    auth.requestMatchers(POST, "/api/v1/categories").hasAuthority(RoleName.ADMIN.name());
+                    auth.requestMatchers(PUT, "/api/v1/categories/*").hasAuthority(RoleName.ADMIN.name());
+                    auth.requestMatchers(DELETE, "/api/v1/categories/*").hasAuthority(RoleName.ADMIN.name());
+
+
+                    // cars
+                    auth.requestMatchers(GET, "/api/v1/cars").permitAll();
+                    auth.requestMatchers(GET, "/api/v1/cars/populate").hasAuthority(RoleName.ADMIN.name());
+                    auth.requestMatchers(GET, "/api/v1/cars/*").permitAll();
+                    auth.requestMatchers(GET, "/api/v1/cars/category/*").permitAll();
+                    auth.requestMatchers(POST, "/api/v1/cars").hasAuthority(RoleName.ADMIN.name());
+                    auth.requestMatchers(PUT, "/api/v1/cars").hasAuthority(RoleName.ADMIN.name());
+                    auth.requestMatchers(DELETE, "/api/v1/cars/*").hasAuthority(RoleName.ADMIN.name());
+
+                    // users
+                    auth.requestMatchers(GET, "/api/v1/users").hasAuthority(RoleName.ADMIN.name());
+                    auth.requestMatchers(GET, "/api/v1/users/check-email").permitAll();
+                    auth.requestMatchers(GET, "/api/v1/users/*").hasAuthority(RoleName.ADMIN.name());
+                    auth.requestMatchers(GET, "/api/v1/users/id/*").hasAuthority(RoleName.ADMIN.name());
+                    auth.requestMatchers(DELETE, "/api/v1/users/*").hasAuthority(RoleName.ADMIN.name());
+
+                    // rentals
+                    auth.requestMatchers(GET, "/api/v1/rentals").hasAuthority(RoleName.ADMIN.name());
+                    auth.requestMatchers(GET, "/api/v1/rentals/*").hasAuthority(RoleName.ADMIN.name());
+                    auth.requestMatchers(GET, "/api/v1/rentals/return/*").hasAuthority(RoleName.ADMIN.name());
+                    auth.requestMatchers(POST, "/api/v1/rentals").authenticated();
+                    auth.requestMatchers(PUT, "/api/v1/rentals/*").hasAuthority(RoleName.ADMIN.name());
+                    auth.requestMatchers(DELETE, "/api/v1/rentals/*").hasAuthority(RoleName.ADMIN.name());
+
                     auth.anyRequest().authenticated();
                 })
                 .exceptionHandling(handler -> {
@@ -90,7 +127,7 @@ public class WebSecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
-        config.addAllowedMethod(HttpMethod.PUT);
+        config.addAllowedMethod(PUT);
         config.addAllowedMethod(HttpMethod.DELETE);
         source.registerCorsConfiguration("/**", config);
         return source;

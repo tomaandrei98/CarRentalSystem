@@ -30,10 +30,10 @@ public class Customer extends BaseEntity<Long> {
     @Column(name = "phone")
     private String phone;
 
-    @OneToMany(mappedBy = "customer")
-    private List<Rental> rentals;
-
-    public void addRental(Rental rental) {
-        rentals.add(rental);
-    }
+//    @OneToMany(mappedBy = "customer")
+//    private List<Rental> rentals;
+//
+//    public void addRental(Rental rental) {
+//        rentals.add(rental);
+//    }
 }

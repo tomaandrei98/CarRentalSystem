@@ -96,9 +96,9 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customerToDelete = customerRepository.findById(customerId)
                 .orElseThrow(() -> new CustomerNotFoundException(getCustomerNotFoundMessage(customerId)));
 
-        if (!customerToDelete.getRentals().isEmpty()) {
-            throw new DeleteCustomerNotAccepted(getDeleteCustomerNotAcceptedMessage(customerId));
-        }
+//        if (!customerToDelete.getRentals().isEmpty()) {
+//            throw new DeleteCustomerNotAccepted(getDeleteCustomerNotAcceptedMessage(customerId));
+//        }
 
         customerRepository.delete(customerToDelete);
     }
@@ -129,7 +129,7 @@ public class CustomerServiceImpl implements CustomerService {
                         .lastName("Last Name 1")
                         .email("first@gmail.com")
                         .phone("0711111111")
-                        .rentals(new ArrayList<>())
+//                        .rentals(new ArrayList<>())
                         .build()
         );
 
@@ -139,7 +139,7 @@ public class CustomerServiceImpl implements CustomerService {
                         .lastName("Last Name 2")
                         .email("second@gmail.com")
                         .phone("0722222222")
-                        .rentals(new ArrayList<>())
+//                        .rentals(new ArrayList<>())
                         .build()
         );
 
@@ -149,7 +149,7 @@ public class CustomerServiceImpl implements CustomerService {
                         .lastName("Last Name 3")
                         .email("third@gmail.com")
                         .phone("0733333333")
-                        .rentals(new ArrayList<>())
+//                        .rentals(new ArrayList<>())
                         .build()
         );
 

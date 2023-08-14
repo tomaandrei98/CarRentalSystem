@@ -14,6 +14,11 @@ public class MessageGenerator {
         return String.format("customer with id %s not found", customerId);
     }
 
+    public static String getAppUserNotFoundMessage(Long userId) {
+        return String.format("user with id %s not found", userId);
+    }
+
+
     public static String getCustomerNotFoundMessage(String email) {
         return String.format("customer with email %s not found", email);
     }
