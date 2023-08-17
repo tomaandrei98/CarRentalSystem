@@ -26,6 +26,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -106,6 +107,14 @@ public class RentalServiceImpl implements RentalService {
         appUser.addRental(rentalToSave);
 
         return appUser.getEmail();
+    }
+
+    private void handleAppUserRelationship(String email, Rental rentalToSave) {
+        AppUser appUser = appUserRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(getAppUserNotFoundMessage(email)));
+
+        rentalToSave.setAppUser(appUser);
+        appUser.addRental(rentalToSave);
     }
 
     @Override

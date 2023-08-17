@@ -1,9 +1,9 @@
 package com.example.rental.controller;
 
+import com.example.rental.dto.request.RequestAppUserDto;
 import com.example.rental.dto.response.ResponseAppUserDto;
 import com.example.rental.dto.response.general.ApiResponse;
 import com.example.rental.dto.response.paginated.PaginatedResponseAppUserDto;
-import com.example.rental.dto.response.paginated.PaginatedResponseCustomerDto;
 import com.example.rental.service.AppUserService;
 import com.example.rental.utils.logger.Log;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +57,19 @@ public class AppUserController {
         );
     }
 
+    @PutMapping("/{appUserId}")
+    @Log
+    public ResponseEntity<ApiResponse<ResponseAppUserDto>> updateAppUser(
+            @PathVariable("appUserId") Long appUserId,
+            @RequestBody RequestAppUserDto requestAppUserDto
+    ) {
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(appUserService.updateAppUser(appUserId, requestAppUserDto),
+                        "User updated successfully.")
+        );
+    }
+
     @DeleteMapping("/{username}")
     @Log
     public ResponseEntity<ApiResponse<Void>> deleteUserByUsername(@PathVariable String username) {
@@ -72,5 +85,4 @@ public class AppUserController {
     public ResponseEntity<Boolean> checkEmailExists(@RequestParam("email") String email) {
         return ResponseEntity.ok(appUserService.checkEmailExists(email));
     }
-
 }

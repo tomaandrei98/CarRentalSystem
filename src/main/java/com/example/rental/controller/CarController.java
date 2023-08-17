@@ -41,7 +41,7 @@ public class CarController {
     ) {
         return ResponseEntity.ok(
                 new ApiResponse<>(carService.getAvailableCars(startDate, endDate),
-                        "Available cars downloaded successfully.s")
+                        "Available cars downloaded successfully.")
         );
     }
 

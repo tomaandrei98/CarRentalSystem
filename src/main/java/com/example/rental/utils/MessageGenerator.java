@@ -18,6 +18,10 @@ public class MessageGenerator {
         return String.format("user with id %s not found", userId);
     }
 
+    public static String getAppUserNotFoundMessage(String email) {
+        return String.format("user with email %s not found", email);
+    }
+
 
     public static String getCustomerNotFoundMessage(String email) {
         return String.format("customer with email %s not found", email);
@@ -45,6 +49,10 @@ public class MessageGenerator {
 
     public static String getEmailAlreadyTakenMessage(String email) {
         return String.format("email %s already taken.", email);
+    }
+
+    public static String getUsernameAlreadyTakenMessage(String username) {
+        return String.format("username %s already taken.", username);
     }
 
 

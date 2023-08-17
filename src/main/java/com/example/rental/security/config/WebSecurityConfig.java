@@ -95,6 +95,7 @@ public class WebSecurityConfig {
                     auth.requestMatchers(GET, "/api/v1/users/check-email").permitAll();
                     auth.requestMatchers(GET, "/api/v1/users/*").hasAuthority(RoleName.ADMIN.name());
                     auth.requestMatchers(GET, "/api/v1/users/id/*").hasAuthority(RoleName.ADMIN.name());
+                    auth.requestMatchers(PUT, "/api/v1/users/*").hasAuthority(RoleName.ADMIN.name());
                     auth.requestMatchers(DELETE, "/api/v1/users/*").hasAuthority(RoleName.ADMIN.name());
 
                     // rentals

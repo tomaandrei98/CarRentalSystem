@@ -1,5 +1,7 @@
 package com.example.rental.security.controller;
 
+import com.example.rental.exception.EmailAlreadyTakenException;
+import com.example.rental.exception.UsernameAlreadyTakenException;
 import com.example.rental.security.model.AppUser;
 import com.example.rental.security.model.RoleName;
 import com.example.rental.security.repository.AppUserRepository;
@@ -14,6 +16,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +24,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.example.rental.utils.MessageGenerator.getEmailAlreadyTakenMessage;
+import static com.example.rental.utils.MessageGenerator.getUsernameAlreadyTakenMessage;
 
 @RestController
 @RequestMapping("/auth")
@@ -32,6 +38,7 @@ public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final JwtUserDetailsService userDetailsService;
     private final JwtTokenUtil jwtTokenUtil;
+
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestParam("username") String username,
                                        @RequestParam("password") String password) {
@@ -46,6 +53,8 @@ public class AuthenticationController {
                 String token = jwtTokenUtil.generateToken(userDetails);
                 responseMap.put("error", false);
                 responseMap.put("message", "Logged In");
+                responseMap.put("username", userDetails.getUsername());
+                responseMap.put("role", userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList().get(0));
                 responseMap.put("token", token);
                 return ResponseEntity.ok(responseMap);
             } else {
@@ -69,6 +78,7 @@ public class AuthenticationController {
             return ResponseEntity.status(500).body(responseMap);
         }
     }
+
     @PostMapping("/register")
     public ResponseEntity<?> saveUser(@RequestParam("first_name") String firstName,
                                       @RequestParam("last_name") String lastName,
@@ -78,6 +88,7 @@ public class AuthenticationController {
                                       @RequestParam("phone") String phone,
                                       @RequestParam(value = "role", defaultValue = "USER") String role) {
         Map<String, Object> responseMap = new HashMap<>();
+        validateEmailAndUsernameToSaveAppUser(email, userName);
 
         AppUser user = new AppUser();
         user.setFirstName(firstName);
@@ -102,6 +113,18 @@ public class AuthenticationController {
         responseMap.put("token", token);
         return ResponseEntity.ok(responseMap);
     }
+
+
+    private void validateEmailAndUsernameToSaveAppUser(String email, String username) {
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new EmailAlreadyTakenException(getEmailAlreadyTakenMessage(email));
+        }
+
+        if (userRepository.findUserByUsername(username) != null) {
+            throw new UsernameAlreadyTakenException(getUsernameAlreadyTakenMessage(username));
+        }
+    }
+
     private RoleName getRoleFromInputString(String role) {
         try {
             return RoleName.valueOf(role.toUpperCase());

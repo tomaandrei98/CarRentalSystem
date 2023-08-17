@@ -1,11 +1,15 @@
 package com.example.rental.service.impl;
 
+import com.example.rental.dto.request.RequestAppUserDto;
 import com.example.rental.dto.response.ResponseAppUserDto;
 import com.example.rental.dto.response.paginated.PaginatedResponseAppUserDto;
 import com.example.rental.exception.AppUserNotFoundException;
+import com.example.rental.exception.EmailAlreadyTakenException;
+import com.example.rental.model.Customer;
 import com.example.rental.model.Rental;
 import com.example.rental.repository.RentalRepository;
 import com.example.rental.security.model.AppUser;
+import com.example.rental.security.model.RoleName;
 import com.example.rental.security.repository.AppUserRepository;
 import com.example.rental.service.AppUserService;
 import com.example.rental.utils.converter.AppUserConverter;
@@ -18,9 +22,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.example.rental.utils.MessageGenerator.getAppUserNotFoundMessage;
+import static com.example.rental.utils.MessageGenerator.getEmailAlreadyTakenMessage;
 
 @Service
 @RequiredArgsConstructor
@@ -88,5 +94,37 @@ public class AppUserServiceImpl implements AppUserService {
                 .numberOfItems(appUsersPage.getTotalElements())
                 .numberOfPages(appUsersPage.getTotalPages())
                 .build();
+    }
+
+    @Override
+    @Log
+    @Transactional
+    public ResponseAppUserDto updateAppUser(Long appUserId, RequestAppUserDto requestAppUserDto) {
+        validateEmailToUpdateAppUser(appUserId, requestAppUserDto.getEmail());
+
+        Optional<AppUser> optionalAppUser = appUserRepository.findById(appUserId);
+
+        optionalAppUser
+                .orElseThrow(() -> new AppUserNotFoundException(getAppUserNotFoundMessage(appUserId)));
+
+        optionalAppUser.ifPresent(updateAppUser -> {
+            updateAppUser.setFirstName(requestAppUserDto.getFirstName());
+            updateAppUser.setLastName(requestAppUserDto.getLastName());
+            updateAppUser.setEmail(requestAppUserDto.getEmail());
+            updateAppUser.setPhone(requestAppUserDto.getPhone());
+            updateAppUser.setRole(RoleName.valueOf(requestAppUserDto.getRole()));
+        });
+
+        return appUserConverter.convertModelToDto(
+                appUserRepository.findById(appUserId)
+                        .orElseThrow(() -> new AppUserNotFoundException(getAppUserNotFoundMessage(appUserId)))
+        );
+    }
+
+    private void validateEmailToUpdateAppUser(Long appUserId, String email) {
+        Optional<AppUser> appUserByEmail = appUserRepository.findByEmail(email);
+        if (appUserByEmail.isPresent() && !appUserByEmail.get().getId().equals(appUserId)) {
+            throw new EmailAlreadyTakenException(getEmailAlreadyTakenMessage(email));
+        }
     }
 }

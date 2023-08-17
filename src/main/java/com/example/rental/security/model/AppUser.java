@@ -25,7 +25,6 @@ public class AppUser extends BaseEntity<Long> {
 
     private String lastName;
 
-    @Column(unique = true)
     private String email;
 
     private String password;

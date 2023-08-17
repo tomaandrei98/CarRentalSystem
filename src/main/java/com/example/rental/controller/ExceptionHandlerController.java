@@ -2,6 +2,7 @@ package com.example.rental.controller;
 
 import com.example.rental.dto.response.general.ApiResponse;
 import com.example.rental.exception.EmailAlreadyTakenException;
+import com.example.rental.exception.UsernameAlreadyTakenException;
 import com.example.rental.exception.base.OperationNotAcceptedException;
 import com.example.rental.exception.base.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,15 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(EmailAlreadyTakenException.class)
     public ResponseEntity<ApiResponse<Object>> handlerEmailAlreadyTakenException(EmailAlreadyTakenException exception) {
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("timestamp", LocalDateTime.now());
+        responseBody.put("error message", exception.getLocalizedMessage());
+
+        return new ResponseEntity<>(new ApiResponse<>(responseBody, exception.getLocalizedMessage()), CONFLICT);
+    }
+
+    @ExceptionHandler(UsernameAlreadyTakenException.class)
+    public ResponseEntity<ApiResponse<Object>> handlerUsernameAlreadyTakenException(UsernameAlreadyTakenException exception) {
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("timestamp", LocalDateTime.now());
         responseBody.put("error message", exception.getLocalizedMessage());

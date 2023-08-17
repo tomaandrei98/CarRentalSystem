@@ -1,5 +1,6 @@
 package com.example.rental.service;
 
+import com.example.rental.dto.request.RequestAppUserDto;
 import com.example.rental.dto.response.ResponseAppUserDto;
 import com.example.rental.dto.response.paginated.PaginatedResponseAppUserDto;
 
@@ -18,5 +19,7 @@ public interface AppUserService {
 
     PaginatedResponseAppUserDto getAppUsersPaginated(Integer pageNumber, Integer pageSize, String sortBy);
 
-    // todo: add update app user and get logged in user
+    ResponseAppUserDto updateAppUser(Long appUserId, RequestAppUserDto requestAppUserDto);
+
+    // todo: add get logged in user to display the user info page
 }
