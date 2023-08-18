@@ -50,7 +50,6 @@ public class RentalController {
         );
     }
 
-
     @GetMapping("/paginated")
     @Log
     public ResponseEntity<ApiResponse<PaginatedResponseRentalDto>> getRentalsPaginated(
