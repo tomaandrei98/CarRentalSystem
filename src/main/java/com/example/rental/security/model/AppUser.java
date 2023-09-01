@@ -3,10 +3,7 @@ package com.example.rental.security.model;
 import com.example.rental.model.Rental;
 import com.example.rental.model.base.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -16,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@Builder
 public class AppUser extends BaseEntity<Long> {
 
     @Column(unique = true)
