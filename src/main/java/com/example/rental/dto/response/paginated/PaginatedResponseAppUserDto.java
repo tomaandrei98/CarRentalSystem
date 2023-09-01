@@ -1,7 +1,6 @@
 package com.example.rental.dto.response.paginated;
 
 import com.example.rental.dto.response.ResponseAppUserDto;
-import com.example.rental.dto.response.ResponseCustomerDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
