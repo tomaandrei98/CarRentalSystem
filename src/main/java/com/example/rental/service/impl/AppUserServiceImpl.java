@@ -5,7 +5,6 @@ import com.example.rental.dto.response.ResponseAppUserDto;
 import com.example.rental.dto.response.paginated.PaginatedResponseAppUserDto;
 import com.example.rental.exception.AppUserNotFoundException;
 import com.example.rental.exception.EmailAlreadyTakenException;
-import com.example.rental.model.Customer;
 import com.example.rental.model.Rental;
 import com.example.rental.repository.RentalRepository;
 import com.example.rental.security.model.AppUser;

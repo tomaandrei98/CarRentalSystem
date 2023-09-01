@@ -4,7 +4,6 @@ import com.example.rental.dto.request.RequestRentalDto;
 import com.example.rental.dto.request.RequestSaveRentalDto;
 import com.example.rental.dto.response.ResponseRentalDto;
 import com.example.rental.dto.response.general.ApiResponse;
-import com.example.rental.dto.response.paginated.PaginatedResponseCustomerDto;
 import com.example.rental.dto.response.paginated.PaginatedResponseRentalDto;
 import com.example.rental.service.RentalService;
 import com.example.rental.utils.logger.Log;
